@@ -9,7 +9,7 @@
       "src": "luxe_fashion/package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "luxe_fashion/build"
+        "distDir": "luxe_fashion/dist"
       }
     }
   ],
@@ -20,27 +20,22 @@
     },
     {
       "src": "/static/(.*)",
-      "dest": "/luxe_fashion/build/static/$1"
+      "dest": "/luxe_fashion/dist/static/$1"
     },
     {
       "src": "/assets/(.*)",
-      "dest": "/luxe_fashion/build/assets/$1"
+      "dest": "/luxe_fashion/dist/assets/$1"
     },
     {
       "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot))",
-      "dest": "/luxe_fashion/build/$1"
+      "dest": "/luxe_fashion/dist/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/luxe_fashion/build/index.html"
+      "dest": "/luxe_fashion/dist/index.html"
     }
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "backend/index.js": {
-      "maxDuration": 30
-    }
   }
 }
