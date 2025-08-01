@@ -84,7 +84,7 @@ const HeroSection = () => {
               <Image
                 src={slide.image}
                 alt={slide.title}
-                className="w-full h-full object-cover transition-transform duration-[10000ms] ease-out hover:scale-110"
+                className="w-full h-full object-cover transition-transform duration-[10s] ease-out hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
