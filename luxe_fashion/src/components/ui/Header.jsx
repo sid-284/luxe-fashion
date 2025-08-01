@@ -321,8 +321,21 @@ const Header = () => {
                   <Icon name="User" size={18} />
                   <span>Account</span>
                 </Button>
+                {user && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center space-x-2 text-muted-foreground hover:text-foreground"
+                  onClick={() => {
+                    navigate('/admin');
+                    closeMenu();
+                  }}
+                >
+                  <Icon name="Settings" size={18} />
+                  <span>Admin Panel</span>
+                </Button>
+              )}
               </div>
-
             </div>
           </div>
         </div>
