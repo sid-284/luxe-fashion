@@ -30,23 +30,7 @@ const SustainabilityInfo = () => {
     }
   ];
 
-  const certifications = [
-    {
-      name: "GOTS Certified",
-      description: "Global Organic Textile Standard",
-      logo: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=80&h=80&fit=crop"
-    },
-    {
-      name: "Fair Trade",
-      description: "Fair Trade USA Certified",
-      logo: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=80&h=80&fit=crop"
-    },
-    {
-      name: "B Corp",
-      description: "Certified B Corporation",
-      logo: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=80&h=80&fit=crop"
-    }
-  ];
+  
 
   return (
     <div className="bg-card py-16 lg:py-24">
