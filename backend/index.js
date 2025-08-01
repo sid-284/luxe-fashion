@@ -19,6 +19,8 @@ let app = express()
 app.use(cookieParser())
 app.use(cors({
   origin: [
+    "https://luxefashion-blond.vercel.app",
+    "https://*.vercel.app",
     "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:4028",
