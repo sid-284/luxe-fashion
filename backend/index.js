@@ -18,29 +18,59 @@ let app = express()
 
 app.use(cookieParser())
 app.use(cors({
-  origin: [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:4028",
-    "https://accounts.google.com",
-    "https://www.googleapis.com",
-    "https://luxe-fashion-sid284.vercel.app",
-    "https://*.vercel.app"
-  ],
+  origin: function (origin, callback) {
+    // Allow all origins - this effectively works as a wildcard
+    // while still supporting credentials
+    console.log('CORS request from origin:', origin || 'no-origin');
+    callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposedHeaders: ['Set-Cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Cookie'],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
 }))
 
 app.use(express.json({ limit: '50mb' }))
 app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 
+// Additional middleware to ensure proper CORS headers on all responses
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  // Always allow the requesting origin (wildcard behavior with credentials)
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Cookie');
+  res.header('Access-Control-Expose-Headers', 'Set-Cookie');
+  next();
+});
+
+// Handle preflight requests for all routes
+app.options('*', (req, res) => {
+  const origin = req.headers.origin;
+  // Always allow the requesting origin (wildcard behavior with credentials)
+  if (origin) {
+    res.header('Access-Control-Allow-Origin', origin);
+  } else {
+    res.header('Access-Control-Allow-Origin', '*');
+  }
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Cookie');
+  res.header('Access-Control-Expose-Headers', 'Set-Cookie');
+  res.sendStatus(200);
+});
+
 // Apply rate limiting to all routes
 app.use(generalLimiter)
 
 // Error handling middleware for multer errors
-app.use((error, req, res, next) => {
+app.use((error, _req, res, next) => {
   if (error instanceof multer.MulterError) {
     if (error.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({ 
@@ -60,7 +90,7 @@ app.use((error, req, res, next) => {
 });
 
 // Health check endpoint
-app.get('/api/health', async (req, res) => {
+app.get('/api/health', async (_req, res) => {
   try {
     // Check database connection
     const mongoose = await import('mongoose');
@@ -94,5 +124,3 @@ app.listen(port,()=>{
     console.log("Hello From Server")
     connectDb()
 })
-
-

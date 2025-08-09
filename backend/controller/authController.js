@@ -30,14 +30,20 @@ export const registration = async (req,res) => {
 
     const user = await User.create({name, email, firebaseUid, avatar});
     let token = await genToken(user._id)
-    res.cookie("token",token,{
-        httpOnly:true,
-        secure:false,
-        sameSite: "Strict",
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
+
+    // Cookie settings for production compatibility
+    const cookieOptions = {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        path: '/',
+        domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+    };
+
+    res.cookie("token", token, cookieOptions)
     console.log('User created successfully:', user._id);
-    return res.status(201).json(user)
+    return res.status(201).json({...user.toObject(), token})
   } catch (error) {
     console.log("registration error:", error)
     return res.status(500).json({message:`registration error ${error.message}`})
@@ -95,14 +101,20 @@ export const login = async (req,res) => {
         }
         
         let token = await genToken(user._id)
-        res.cookie("token",token,{
-        httpOnly:true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
+
+        // Cookie settings for production compatibility
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+        };
+
+        res.cookie("token", token, cookieOptions)
     console.log('Login successful:', user._id);
-    return res.status(201).json(user)
+    return res.status(201).json({...user.toObject(), token})
 
     } catch (error) {
          console.error("login error:", error)
@@ -155,7 +167,7 @@ export const googleLogin = async (req,res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000
     })
     console.log('Google login successful:', user._id);
-    return res.status(200).json(user)
+    return res.status(200).json({...user.toObject(), token})
 
     } catch (error) {
          console.error("googleLogin error:", error)
@@ -168,19 +180,40 @@ export const googleLogin = async (req,res) => {
 export const adminLogin = async (req,res) => {
     try {
         let {email , password} = req.body
-        console.log('Admin login attempt:', { email, password });
-        console.log('Expected admin email:', process.env.ADMIN_EMAIL);
-        console.log('Expected admin password:', process.env.ADMIN_PASSWORD);
-        
+        console.log('Admin login attempt:', { email: email ? 'provided' : 'missing', password: password ? 'provided' : 'missing' });
+        console.log('Environment check:', {
+            hasAdminEmail: !!process.env.ADMIN_EMAIL,
+            hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+            nodeEnv: process.env.NODE_ENV
+        });
+
+        // Check if environment variables are set
+        if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+            console.error('Admin credentials not configured in environment variables');
+            return res.status(500).json({message: "Admin credentials not configured"});
+        }
+
         if(email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD){
             console.log('Admin login successful');
             let token = await genToken1(email)
-            res.cookie("token",token,{
-                httpOnly:true,
+
+            // Cookie settings for production compatibility
+            const cookieOptions = {
+                httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
-                maxAge: 1 * 24 * 60 * 60 * 1000
-            })
+                sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+                maxAge: 1 * 24 * 60 * 60 * 1000,
+                path: '/',
+                domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+            };
+
+            // For production, ensure domain is set correctly
+            if (process.env.NODE_ENV === 'production') {
+                // Don't set domain for Vercel deployments - let it auto-detect
+                console.log('Setting production cookie with options:', cookieOptions);
+            }
+
+            res.cookie("token", token, cookieOptions)
             return res.status(200).json({ message: 'Admin login successful', token })
         }
         console.log('Admin login failed - invalid credentials');

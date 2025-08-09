@@ -5,7 +5,16 @@ const isAuth = async (req,res,next) => {
     try {
         let {token} = req.cookies
         console.log('isAuth - Token from cookies:', token ? 'Present' : 'Missing');
-        
+
+        // Fallback to Authorization header if no cookie
+        if(!token){
+            const authHeader = req.headers.authorization;
+            if (authHeader && authHeader.startsWith('Bearer ')) {
+                token = authHeader.substring(7);
+                console.log('isAuth - Token from Authorization header:', token ? 'Present' : 'Missing');
+            }
+        }
+
         if(!token){
             return res.status(401).json({message:"User does not have token"})
         }
