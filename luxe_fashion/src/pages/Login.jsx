@@ -6,7 +6,7 @@ import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import { auth, provider } from '../utils/firebase';
 import { signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
-import { apiFetch } from '../utils/api';
+import { apiFetch, authUtils } from '../utils/api';
 
 const Login = () => {
   const navigate = useNavigate();

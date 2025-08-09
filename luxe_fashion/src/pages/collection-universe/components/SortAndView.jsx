@@ -24,13 +24,12 @@ const SortAndView = ({
 
   const viewModes = [
     { id: 'grid', icon: 'Grid3X3', label: 'Grid View' },
-    { id: 'masonry', icon: 'LayoutGrid', label: 'Masonry View' },
     { id: 'list', icon: 'List', label: 'List View' }
   ];
 
   return (
-    <div className="bg-card border-b border-border sticky top-16 z-30 py-4">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="bg-card border-b border-border sticky top-16 z-30 py-2">
+      <div className="px-4 lg:px-6">
         <div className="flex items-center justify-between">
           {/* Left Side - Filter Toggle & Results */}
           <div className="flex items-center space-x-4">

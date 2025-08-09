@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Quicksand', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Gruppo', ui-sans-serif, system-ui, sans-serif;
   background: linear-gradient(135deg, #FFD1DC 0%, #B5E3FF 100%);
   min-height: 100vh;
 }
@@ -14,10 +14,11 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Gruppo', ui-sans-serif, system-ui, sans-serif;
   color: #FFB6B9;
   letter-spacing: 1px;
 }
+
 .card, .btn, .input, .select, .modal, .header, .footer {
   border-radius: 1.25rem;
   box-shadow: 0 4px 24px 0 rgba(255, 209, 220, 0.15);

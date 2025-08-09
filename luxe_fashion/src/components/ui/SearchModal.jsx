@@ -212,7 +212,9 @@ const SearchModal = ({ open, onClose }) => {
   // Focus input on open
   useEffect(() => {
     if (open && inputRef.current) {
-      inputRef.current.focus();
+      setTimeout(() => {
+        inputRef.current.focus();
+      }, 100);
     }
   }, [open]);
 
@@ -227,6 +229,18 @@ const SearchModal = ({ open, onClose }) => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [open, onClose]);
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [open]);
 
   useEffect(() => {
     if (open) {
@@ -268,83 +282,180 @@ const SearchModal = ({ open, onClose }) => {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity animate-fadeIn" onClick={onClose} />
-      {/* Modal */}
-      <div
-        className="relative z-10 w-full max-w-lg mx-auto rounded-xl shadow-2xl border border-border bg-card px-6 py-8 animate-slideDown"
-        style={{
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          position: 'fixed',
-          width: '90vw',
-          maxWidth: '32rem',
-          minWidth: '0',
-        }}
-      >
-        <button
-          className="absolute top-4 right-4 text-muted-foreground hover:text-accent focus:outline-none focus:ring-2 focus:ring-accent rounded"
-          onClick={onClose}
-          aria-label="Close search"
-        >
-          <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-        <h2 className="text-xl font-serif font-semibold text-foreground mb-4 text-center">Search Luxe</h2>
-        <input
-          ref={inputRef}
-          type="text"
-          className="w-full border border-border rounded-md px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-accent bg-background"
-          placeholder="Search for products, brands, or categories..."
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-        />
-        <div className="mt-6">
-          {loading ? (
-            <div className="flex justify-center items-center py-8">
-              <svg className="animate-spin h-6 w-6 text-accent" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" /></svg>
+    <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-16 pb-8 px-4 sm:px-6 lg:px-8">
+      {/* Backdrop Overlay */}
+      <div 
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300 animate-fadeIn" 
+        onClick={onClose} 
+      />
+      
+      {/* Modal Container */}
+      <div className="relative w-full max-w-2xl mx-auto animate-slideDown">
+        {/* Modal Content */}
+        <div className="bg-card border border-border rounded-xl shadow-2xl overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-border bg-gradient-to-r from-background to-background/95">
+            <h2 className="text-xl font-serif font-semibold text-foreground">Search 9tytwo</h2>
+            <button
+              className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-accent"
+              onClick={onClose}
+              aria-label="Close search"
+            >
+              <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          {/* Search Input */}
+          <div className="p-6 border-b border-border">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                ref={inputRef}
+                type="text"
+                className="w-full pl-12 pr-4 py-3 border border-border rounded-lg text-base placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent bg-background transition-all duration-200"
+                placeholder="Search for products, brands, or categories..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
             </div>
-          ) : query && results.length === 0 ? (
-            <div className="text-muted-foreground text-center text-sm py-8">No products found.</div>
-          ) : results.length > 0 ? (
-            <ul className="divide-y divide-border max-h-72 overflow-y-auto">
-              {results.map(product => (
-                <li
-                  key={product._id || product.id}
-                  className="flex items-center gap-4 py-3 cursor-pointer hover:bg-muted/50 rounded transition"
-                  onClick={() => {
-                    onClose();
-                    navigate(`/product?id=${product._id || product.id}`);
-                  }}
-                >
-                  <img
-                    src={product.image1 || product.images?.[0] || '/assets/images/no_image.png'}
-                    alt={product.name}
-                    className="w-12 h-16 object-cover rounded border border-border bg-muted"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-foreground truncate">{product.name}</div>
-                    <div className="text-sm text-muted-foreground truncate">{product.brand || product.category || product.designer}</div>
+          </div>
+
+          {/* Results */}
+          <div className="max-h-96 overflow-y-auto">
+            {loading ? (
+              <div className="flex justify-center items-center py-12">
+                <div className="flex items-center space-x-2 text-accent">
+                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span className="text-sm font-medium">Searching...</span>
+                </div>
+              </div>
+            ) : query && results.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-muted-foreground mb-2">
+                  <svg className="mx-auto h-12 w-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-3-3V7a3 3 0 00-6 0v2M5 12h14l-1 7H6l-1-7z" />
+                  </svg>
+                </div>
+                <p className="text-muted-foreground text-sm">No products found for "{query}"</p>
+                <p className="text-muted-foreground text-xs mt-1">Try adjusting your search terms</p>
+              </div>
+            ) : results.length > 0 ? (
+              <div className="divide-y divide-border">
+                {results.slice(0, 8).map(product => (
+                  <div
+                    key={product._id || product.id}
+                    className="flex items-center gap-4 p-4 cursor-pointer hover:bg-muted/30 transition-colors duration-200 group"
+                    onClick={() => {
+                      onClose();
+                      navigate(`/product?id=${product._id || product.id}`);
+                    }}
+                  >
+                    <div className="flex-shrink-0">
+                      <img
+                        src={product.image1 || product.images?.[0] || '/assets/images/no_image.png'}
+                        alt={product.name}
+                        className="w-14 h-18 object-cover rounded-lg border border-border bg-muted group-hover:scale-105 transition-transform duration-200"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-medium text-foreground truncate group-hover:text-accent transition-colors duration-200">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground truncate">
+                        {product.brand || product.category || product.designer}
+                      </p>
+                      {product.rating && (
+                        <div className="flex items-center mt-1">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <svg
+                                key={i}
+                                className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                              </svg>
+                            ))}
+                          </div>
+                          <span className="text-xs text-muted-foreground ml-1">
+                            ({product.reviews || 0})
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-0">
+                      <div className="font-semibold text-accent text-right">
+                        {formatINR(convertUSDToINR(product.price))}
+                      </div>
+                      {product.originalPrice && product.originalPrice > product.price && (
+                        <div className="text-sm text-muted-foreground line-through">
+                          {formatINR(convertUSDToINR(product.originalPrice))}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="font-semibold text-accent">{formatINR(convertUSDToINR(product.price))}</div>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="text-muted-foreground text-center text-sm py-8">Start typing to search our collection.</div>
-          )}
+                ))}
+                {results.length > 8 && (
+                  <div className="p-4 text-center border-t border-border">
+                    <p className="text-sm text-muted-foreground">
+                      Showing 8 of {results.length} results
+                    </p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-muted-foreground mb-2">
+                  <svg className="mx-auto h-12 w-12 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <p className="text-muted-foreground text-sm">Start typing to search our luxury collection</p>
+                <p className="text-muted-foreground text-xs mt-1">Find products, brands, and categories</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      {/* Animations */}
+
+      {/* Custom Animations */}
       <style>{`
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .animate-fadeIn { animation: fadeIn 0.2s; }
-        @keyframes slideDown { from { transform: translateY(-32px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .animate-slideDown { animation: slideDown 0.25s cubic-bezier(.4,1.7,.7,1) forwards; }
+        @keyframes fadeIn { 
+          from { opacity: 0; } 
+          to { opacity: 1; } 
+        }
+        .animate-fadeIn { 
+          animation: fadeIn 0.3s ease-out; 
+        }
+        @keyframes slideDown { 
+          from { 
+            transform: translateY(-2rem); 
+            opacity: 0;
+            scale: 0.95;
+          } 
+          to { 
+            transform: translateY(0); 
+            opacity: 1;
+            scale: 1;
+          } 
+        }
+        .animate-slideDown { 
+          animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; 
+        }
       `}</style>
     </div>
   );
 };
 
-export default SearchModal; 
+export default SearchModal;

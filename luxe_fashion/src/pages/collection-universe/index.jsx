@@ -23,7 +23,10 @@ const CollectionUniverse = () => {
   });
   
   // State for backend products
-  const [isLoading, setIsLoading] = useState(true);
+  const [backendProducts, setBackendProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   
   // Polling interval reference
   const pollingIntervalRef = useRef(null);
@@ -51,219 +54,18 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
     specialties: ["Modest Fashion", "Sustainable Practices", "Ethical Production", "Timeless Design"],
     image: "https://images.unsplash.com/photo-1494790108755-2616c9c0b8e3?w=500&h=600&fit=crop"
   };
-
-  // Mock collection data
-  const productsData = [
-    {
-      id: 1,
-      name: "Cashmere Wrap Coat",
-      designer: "Isabella Marchetti",
-      price: 2480,
-      originalPrice: 3200,
-      rating: 4.8,
-      reviews: 24,
-      description: "Luxurious cashmere coat with an elegant wrap silhouette, perfect for transitional weather.",
-      images: [
-        "images/images/sandbreeze.jpg"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: true },
-        { size: 'M', available: false },
-        { size: 'L', available: true },
-        { size: 'XL', available: true }
-      ],
-      isNew: true,
-      onSale: true,
-      sustainability: true,
-      isWishlisted: false,
-      popularity: 95,
-      createdAt: "2024-07-10"
-    },
-    {
-      id: 2,
-      name: "Silk Midi Dress",
-      designer: "Isabella Marchetti",
-      price: 1420,
-      rating: 4.9,
-      reviews: 18,
-      description: "Flowing silk dress with delicate pleating and a flattering midi length.",
-      images: [
-        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: false }
-      ],
-      isNew: true,
-      sustainability: true,
-      isWishlisted: true,
-      popularity: 88,
-      createdAt: "2024-07-08"
-    },
-    {
-      id: 3,
-      name: "Merino Wool Sweater",
-      designer: "Isabella Marchetti",
-      price: 420,
-      rating: 4.7,
-      reviews: 32,
-      description: "Soft merino wool sweater with a relaxed fit and subtle texture details.",
-      images: [
-        "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: false },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: true }
-      ],
-      sustainability: true,
-      isWishlisted: false,
-      popularity: 76,
-      createdAt: "2024-07-05"
-    },
-    {
-      id: 4,
-      name: "Tailored Blazer",
-      designer: "Isabella Marchetti",
-      price: 890,
-      rating: 4.6,
-      reviews: 15,
-      description: "Impeccably tailored blazer with structured shoulders and a modern silhouette.",
-      images: [
-        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: false },
-        { size: 'XL', available: true }
-      ],
-      isWishlisted: false,
-      popularity: 82,
-      createdAt: "2024-07-03"
-    },
-    {
-      id: 5,
-      name: "Pleated Midi Skirt",
-      designer: "Isabella Marchetti",
-      price: 520,
-      rating: 4.8,
-      reviews: 28,
-      description: "Elegant pleated skirt in luxurious fabric with a timeless midi length.",
-      images: [
-        "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: true }
-      ],
-      sustainability: true,
-      isWishlisted: true,
-      popularity: 91,
-      createdAt: "2024-07-01"
-    },
-    {
-      id: 6,
-      name: "Cashmere Turtleneck",
-      designer: "Isabella Marchetti",
-      price: 380,
-      rating: 4.9,
-      reviews: 41,
-      description: "Ultra-soft cashmere turtleneck in a classic fit, perfect for layering.",
-      images: [
-        "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: false },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: true }
-      ],
-      sustainability: true,
-      isWishlisted: false,
-      popularity: 94,
-      createdAt: "2024-06-28"
-    },
-    {
-      id: 7,
-      name: "Wide-Leg Trousers",
-      designer: "Isabella Marchetti",
-      price: 620,
-      rating: 4.5,
-      reviews: 19,
-      description: "Sophisticated wide-leg trousers with a high waist and flowing silhouette.",
-      images: [
-        "https://images.unsplash.com/photo-1551698618-1dfe5d97d256?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: true },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: false }
-      ],
-      isWishlisted: false,
-      popularity: 73,
-      createdAt: "2024-06-25"
-    },
-    {
-      id: 8,
-      name: "Silk Blouse",
-      designer: "Isabella Marchetti",
-      price: 480,
-      rating: 4.7,
-      reviews: 26,
-      description: "Elegant silk blouse with subtle draping and mother-of-pearl buttons.",
-      images: [
-        "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=500&fit=crop",
-        "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=500&fit=crop"
-      ],
-      sizes: [
-        { size: 'XS', available: false },
-        { size: 'S', available: true },
-        { size: 'M', available: true },
-        { size: 'L', available: true },
-        { size: 'XL', available: true }
-      ],
-      sustainability: true,
-      isWishlisted: true,
-      popularity: 86,
-      createdAt: "2024-06-22"
-    }
-  ];
-
-  const [backendProducts, setBackendProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   
   // Fetch products from backend
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const data = await apiFetch('/product/list');
-      setBackendProducts(data);
+      setBackendProducts(data || []);
       setError(null);
     } catch (err) {
       console.error('Error fetching products:', err);
       setError('Failed to load products. Please try again.');
+      setBackendProducts([]); // Fallback to empty array
     } finally {
       setLoading(false);
     }
@@ -286,27 +88,17 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
     };
   }, [fetchProducts]);
 
-  // Debug function to clear cart and localStorage
-  const clearCartDebug = () => {
-    localStorage.removeItem('cart');
-    localStorage.removeItem('wishlist');
-    console.log('Cart and wishlist cleared from localStorage');
-    window.location.reload();
-  };
-
-  // Debug function to show what products are being displayed
-  useEffect(() => {
-    console.log('Filtered products:', filteredProducts.map(p => p.name));
-    console.log('Backend products with categories:', backendProducts.map(p => ({ name: p.name, category: p.category })));
-  }, [filteredProducts, backendProducts]);
-
-
   // Apply filters when filters or backend products change
   useEffect(() => {
+    if (!Array.isArray(backendProducts)) {
+      setFilteredProducts([]);
+      return;
+    }
+
     // Start with the backend products
     let filtered = backendProducts.map(product => ({
       ...product,
-      id: product._id, // Ensure id is available for consistency
+      id: product._id || product.id, // Ensure id is available for consistency
       images: [
         product.image1, 
         product.image2, 
@@ -343,7 +135,7 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
               } else {
                 // Fallback to name-based filtering if category is not available
                 return filters[filterType].some(cat => 
-                  product.name.toLowerCase().includes(cat.toLowerCase())
+                  product.name && product.name.toLowerCase().includes(cat.toLowerCase())
                 );
               }
             case 'size':
@@ -363,7 +155,7 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
               return true; // Simplified for demo
             case 'price':
               return filters[filterType].some(priceRange => {
-                const priceInINR = convertUSDToINR(product.price);
+                const priceInINR = convertUSDToINR(product.price || 0);
                 switch (priceRange) {
                   case 'under-100':
                     return priceInINR < convertUSDToINR(100);
@@ -390,7 +182,6 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
 
     console.log('Applied filters:', filters);
     console.log('Filtered products count:', filtered.length);
-    console.log('Sample product sizes:', backendProducts.slice(0, 2).map(p => ({ name: p.name, sizes: p.sizes })));
     setFilteredProducts(filtered);
   }, [filters, backendProducts]);
 
@@ -423,50 +214,79 @@ Our commitment extends beyond just beautiful clothing – we believe in sustaina
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
-      {/* Collection Hero */}
-      <CollectionHero collection={collectionData} />
-      
-      {/* Designer Spotlight */}
-      <DesignerSpotlight designer={designerData} />
-      
-      {/* Main Content */}
+
+      {/* Main Layout Container */}
       <div className="flex">
-        {/* Filter Sidebar */}
-        <FilterSidebar
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          filters={filters}
-          onFilterChange={handleFilterChange}
-        />
-        
-        {/* Products Section */}
-        <div className="flex-1 lg:ml-80">
-          {/* Sort and View Controls */}
-          <SortAndView
-            sortBy={sortBy}
-            onSortChange={setSortBy}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-            onFilterToggle={toggleFilter}
-            totalProducts={filteredProducts.length}
+        {/* Filter Sidebar - Fixed positioning */}
+        <div className="hidden lg:block">
+          <FilterSidebar
+            isOpen={true} // Always open on desktop
+            onClose={() => setIsFilterOpen(false)}
+            filters={filters}
+            onFilterChange={handleFilterChange}
           />
-          
-          {/* Debug Section - Remove in production */}
-          
-          {/* Product Grid */}
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <ProductGrid
-              products={filteredProducts}
-              viewMode={viewMode}
+        </div>
+
+        {/* Mobile Filter Sidebar - Overlay */}
+        <div className="lg:hidden">
+          <FilterSidebar
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            filters={filters}
+            onFilterChange={handleFilterChange}
+          />
+        </div>
+
+        {/* Main Content - Takes remaining width */}
+        <div className="flex-1 w-full">
+          {/* Collection Hero */}
+          <CollectionHero collection={collectionData} />
+
+          {/* Designer Spotlight */}
+          <DesignerSpotlight designer={designerData} />
+
+          {/* Products Section */}
+          <div>
+            {/* Sort and View Controls */}
+            <SortAndView
               sortBy={sortBy}
+              onSortChange={setSortBy}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onFilterToggle={toggleFilter}
+              totalProducts={filteredProducts.length}
             />
+
+            {/* Product Grid */}
+            <div className="px-4 lg:px-6 pb-8">
+              {loading ? (
+                <div className="text-center py-8">
+                  <p>Loading products...</p>
+                </div>
+              ) : error ? (
+                <div className="text-center py-8">
+                  <p className="text-red-600">{error}</p>
+                  <button 
+                    onClick={fetchProducts}
+                    className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark"
+                  >
+                    Retry
+                  </button>
+                </div>
+              ) : (
+                <ProductGrid
+                  products={filteredProducts}
+                  viewMode={viewMode}
+                  sortBy={sortBy}
+                />
+              )}
+            </div>
           </div>
+
+          {/* Sustainability Info */}
+          <SustainabilityInfo />
         </div>
       </div>
-      
-      {/* Sustainability Info */}
-      <SustainabilityInfo />
     </div>
   );
 };

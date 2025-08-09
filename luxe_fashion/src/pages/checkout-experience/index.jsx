@@ -246,25 +246,7 @@ const CheckoutExperience = () => {
       </main>
 
       {/* Footer with Security Info */}
-      <footer className="bg-card border-t border-border py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <Icon name="Lock" size={16} className="text-success" />
-              <span>Secured by 256-bit SSL encryption</span>
-            </div>
-            <div className="flex items-center gap-6">
-              <img src="https://via.placeholder.com/60x30/E5E5E5/666666?text=VISA" alt="Visa" className="h-6" />
-              <img src="https://via.placeholder.com/60x30/E5E5E5/666666?text=MC" alt="Mastercard" className="h-6" />
-              <img src="https://via.placeholder.com/60x30/E5E5E5/666666?text=AMEX" alt="American Express" className="h-6" />
-              <img src="https://via.placeholder.com/60x30/E5E5E5/666666?text=PAYPAL" alt="PayPal" className="h-6" />
-            </div>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} Luxe Fashion. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };

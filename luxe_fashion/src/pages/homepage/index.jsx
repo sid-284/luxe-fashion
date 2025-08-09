@@ -91,7 +91,7 @@ const Homepage = () => {
                   </div>
                   <h2 className="text-4xl sm:text-5xl font-serif font-bold text-foreground mb-6">
                     A Shared Vision of
-                    <span className="bg-gradient-to-r from-accent to-amber-400 bg-clip-text text-transparent"> Modesty & Style</span>
+                    <span className="bg-gradient-to-r from-accent to-[#92b174] bg-clip-text text-transparent"> Modesty & Style</span>
                   </h2>
                 </div>
 
@@ -112,7 +112,7 @@ const Homepage = () => {
                       href="https://www.instagram.com/9tytwoofficial"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center px-6 py-4 rounded-xl bg-gradient-to-r from-accent to-amber-400 text-black font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                      className="group inline-flex items-center px-6 py-4 rounded-xl bg-gradient-to-r from-accent to-[#92b174] text-black font-semibold hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                     >
                       <Icon name="Instagram" size={20} className="mr-3 group-hover:scale-110 transition-transform duration-300" />
                       Follow us on Instagram
@@ -140,7 +140,7 @@ const Homepage = () => {
                     <div className="text-lg text-muted-foreground max-w-xs">Where friendship meets fashion, and dreams become reality</div>
                   </div>
                   <div className="absolute top-4 right-4 w-20 h-20 bg-accent/10 rounded-full"></div>
-                  <div className="absolute bottom-4 left-4 w-16 h-16 bg-amber-400/10 rounded-full"></div>
+                 
                 </div>
               </div>
             </div>
@@ -148,7 +148,7 @@ const Homepage = () => {
         </section>
 
         {/* Enhanced Values Section */}
-        <section className="py-24 bg-gradient-to-br from-muted/10 via-accent/5 to-amber-400/5 relative overflow-hidden">
+        <section className="py-24 bg-gradient-to-br from-muted/10 via-accent/5 to-[#92b174]/5 relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-16">
               <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-accent/10 text-accent mb-6">
@@ -157,7 +157,7 @@ const Homepage = () => {
               </div>
               <h2 className="text-4xl sm:text-5xl font-serif font-bold text-foreground mb-6">
                 Our Core
-                <span className="bg-gradient-to-r from-accent to-amber-400 bg-clip-text text-transparent"> Values</span>
+                <span className="bg-gradient-to-r from-accent to-[#92b174] bg-clip-text text-transparent"> Values</span>
               </h2>
             </div>
 

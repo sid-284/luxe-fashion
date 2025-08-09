@@ -20,7 +20,7 @@ export default {
       colors: {
         border: "var(--color-border)", /* light-gray */
         input: "var(--color-input)", /* white */
-        ring: "var(--color-ring)", /* muted-gold */
+        ring: "var(--color-ring)", /* sage-green */
         background: "var(--color-background)", /* warm-white */
         foreground: "var(--color-foreground)", /* rich-black */
         primary: {
@@ -32,7 +32,7 @@ export default {
           foreground: "var(--color-secondary-foreground)", /* white */
         },
         destructive: {
-          DEFAULT: "var(--color-destructive)", /* muted-burgundy */
+          DEFAULT: "var(--color-destructive)", /* red */
           foreground: "var(--color-destructive-foreground)", /* white */
         },
         muted: {
@@ -40,8 +40,8 @@ export default {
           foreground: "var(--color-muted-foreground)", /* medium-gray */
         },
         accent: {
-          DEFAULT: "var(--color-accent)", /* muted-gold */
-          foreground: "var(--color-accent-foreground)", /* rich-black */
+          DEFAULT: "var(--color-accent)", /* sage-green */
+          foreground: "var(--color-accent-foreground)", /* white */
         },
         popover: {
           DEFAULT: "var(--color-popover)", /* pure-white */
@@ -56,20 +56,22 @@ export default {
           foreground: "var(--color-success-foreground)", /* white */
         },
         warning: {
-          DEFAULT: "var(--color-warning)", /* warm-amber */
+          DEFAULT: "var(--color-warning)", /* sage-green - changed from amber */
           foreground: "var(--color-warning-foreground)", /* white */
         },
         error: {
-          DEFAULT: "var(--color-error)", /* muted-burgundy */
+          DEFAULT: "var(--color-error)", /* red */
           foreground: "var(--color-error-foreground)", /* white */
         },
         surface: "var(--color-surface)", /* subtle-depth */
+        // Updated pastel colors to complement the new sage green theme
         pastelPink: '#FFD1DC',
-        pastelYellow: '#FFFACD',
+        pastelYellow: '#92b174', // Changed from '#FFFACD' to sage green
         pastelBlue: '#B5E3FF',
         pastelGreen: '#C1F7C7',
         pastelPurple: '#E0BBE4',
-        accent: '#FFB6B9',
+        pastelSage: '#B8C9A8', // New sage pastel to complement the main color
+        brand: '#92b174', // Direct access to the brand color
       },
       borderRadius: {
         lg: "var(--radius-lg)",
@@ -85,10 +87,10 @@ export default {
         'cute': '1.25rem',
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui"],
-        serif: ["var(--font-serif)", "Merriweather", "Georgia", "serif"],
-        display: ["var(--font-display)", "Playfair Display", "Georgia", "serif"],
-        italic: ["var(--font-italic)", "Crimson Text", "Georgia", "serif"],
+        sans: ["Gruppo", "ui-sans-serif", "system-ui"],
+        serif: ["Gruppo", "Georgia", "serif"],
+        display: ["Gruppo", "ui-sans-serif", "system-ui"],
+        italic: ["Gruppo", "Georgia", "serif"],
       },
       fontSize: {
         'xs': ['0.75rem', { lineHeight: '1rem' }],
@@ -130,7 +132,8 @@ export default {
         'none': 'var(--shadow-none)',
         'card': 'var(--elevation-card)',
         'modal': 'var(--elevation-modal)',
-        'cute': '0 4px 24px 0 rgba(255, 209, 220, 0.15)',
+        'sage': '0 4px 24px 0 rgba(146, 177, 116, 0.15)', // Updated to use the new sage green color
+        'brand': '0 4px 24px 0 rgba(146, 177, 116, 0.15)', // Brand shadow with the new color
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

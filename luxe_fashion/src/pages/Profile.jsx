@@ -13,8 +13,7 @@ const Profile = () => {
   const { user } = useUser();
   const [form, setForm] = useState({
     name: user?.displayName || '',
-    email: user?.email || '',
-    avatar: user?.photoURL || ''
+    email: user?.email || ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
@@ -84,16 +83,7 @@ const Profile = () => {
                     className="w-full border border-border rounded-md px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-accent"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Avatar URL</label>
-                  <input
-                    type="text"
-                    name="avatar"
-                    value={form.avatar}
-                    onChange={handleChange}
-                    className="w-full border border-border rounded-md px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-accent"
-                  />
-                </div>
+                
                 {error && <div className="text-error text-sm text-center">{error}</div>}
                 {success && <div className="text-success text-sm text-center">{success}</div>}
                 <Button type="submit" variant="primary" fullWidth loading={loading}>

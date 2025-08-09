@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useUser } from '../context/UserContext';
-import { apiFetch } from '../utils/api';
+import { apiFetch, authUtils } from '../utils/api';
 import Header from '../components/ui/Header';
 import Footer from './homepage/components/Footer';
 import Button from '../components/ui/Button';
@@ -38,16 +38,63 @@ const AdminPanel = () => {
   const [adminForm, setAdminForm] = useState({ email: '', password: '' });
   const [adminLoading, setAdminLoading] = useState(false);
 
+  // Check admin authentication status on component mount
+  useEffect(() => {
+    // Check localStorage first for quick authentication
+    if (authUtils.isAdmin() && authUtils.isAuthenticated()) {
+      setIsAdminLoggedIn(true);
+    }
+    checkAdminAuth();
+    // eslint-disable-next-line
+  }, []);
+
   useEffect(() => {
     if (isAdminLoggedIn) fetchProducts();
     // eslint-disable-next-line
   }, [isAdminLoggedIn]);
 
+  const checkAdminAuth = async () => {
+    try {
+      console.log('Checking admin authentication...');
+      console.log('API Base URL:', import.meta.env.VITE_API_BASE_URL || '/api');
+      console.log('Current URL:', window.location.href);
+
+      const response = await apiFetch('/user/getadmin');
+      console.log('Admin auth response:', response);
+
+      if (response && response.role === 'admin') {
+        setIsAdminLoggedIn(true);
+        console.log('Admin authentication verified');
+        setError('');
+      } else {
+        setIsAdminLoggedIn(false);
+        console.log('Admin authentication failed - invalid response');
+        setError('Admin authentication failed');
+      }
+    } catch (error) {
+      console.error('Admin authentication error:', error);
+      console.log('Error details:', {
+        message: error.message,
+        status: error.status,
+        stack: error.stack
+      });
+      setIsAdminLoggedIn(false);
+      setError(`Authentication check failed: ${error.message}`);
+    }
+  };
+
   const handleAdminLogin = async (e) => {
     e.preventDefault();
-    console.log('Admin login form submitted:', adminForm);
+    console.log('Admin login form submitted');
+    console.log('Environment check:', {
+      apiBaseUrl: import.meta.env.VITE_API_BASE_URL || '/api',
+      currentOrigin: window.location.origin
+    });
+
     setAdminLoading(true);
     setError('');
+    setSuccess('');
+
     try {
       const response = await apiFetch('/auth/adminlogin', {
         method: 'POST',
@@ -56,18 +103,49 @@ const AdminPanel = () => {
           password: adminForm.password
         }),
       });
+
       console.log('Admin login response:', response);
-      setIsAdminLoggedIn(true);
-      setSuccess('Admin login successful!');
+
+      if (response && (response.message === 'Admin login successful' || response.token)) {
+        // Store admin authentication status
+        authUtils.setAdminAuth(true);
+        setIsAdminLoggedIn(true);
+        setSuccess('Admin login successful!');
+        // Verify authentication immediately after login
+        setTimeout(() => checkAdminAuth(), 1000);
+      } else {
+        setError('Login failed - unexpected response');
+      }
     } catch (err) {
       console.error('Admin login error:', err);
-      setError('Invalid admin credentials');
+      console.error('Error details:', {
+        message: err.message,
+        status: err.status,
+        data: err.data
+      });
+
+      if (err.status === 400) {
+        setError('Invalid admin credentials');
+      } else if (err.status === 500) {
+        setError('Server error - admin credentials not configured');
+      } else {
+        setError(`Login failed: ${err.message}`);
+      }
     } finally {
       setAdminLoading(false);
     }
   };
 
-  const handleAdminLogout = () => {
+  const handleAdminLogout = async () => {
+    try {
+      // Call backend logout to clear the cookie
+      await apiFetch('/auth/logout', { method: 'GET' });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+
+    // Clear localStorage authentication data
+    authUtils.clearAuthToken();
     setIsAdminLoggedIn(false);
     setAdminForm({ email: '', password: '' });
     setSuccess('');
@@ -208,18 +286,27 @@ const AdminPanel = () => {
         hasImage3: !!form.image3,
         hasImage4: !!form.image4
       });
-      
+
+      console.log('Admin logged in status:', isAdminLoggedIn);
+
       if (editProduct) {
-        await apiFetch(`/product/update/${editProduct._id || editProduct.id}`, {
+        console.log('Updating product:', editProduct._id || editProduct.id);
+        const response = await apiFetch(`/product/update/${editProduct._id || editProduct.id}`, {
           method: 'PUT',
           body,
+          headers: {
+            'Authorization': `Bearer ${authUtils.getAuthToken()}`
+          }
         });
+        console.log('Update response:', response);
         setSuccess('Product updated');
       } else {
-        await apiFetch('/product/addproduct', {
+        console.log('Adding new product...');
+        const response = await apiFetch('/product/addproduct', {
           method: 'POST',
           body,
         });
+        console.log('Add product response:', response);
         setSuccess('Product added');
       }
       setShowForm(false);
@@ -332,8 +419,16 @@ const AdminPanel = () => {
       <main className="flex-1 flex flex-col items-center py-16 px-4">
         <div className="bg-card rounded-lg shadow-lg p-8 max-w-4xl w-full">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-serif font-semibold text-foreground">Admin Product Management</h2>
+            <div>
+              <h2 className="text-2xl font-serif font-semibold text-foreground">Admin Product Management</h2>
+              <div className="text-sm text-muted-foreground mt-1">
+                Status: <span className={isAdminLoggedIn ? "text-green-600" : "text-red-600"}>
+                  {isAdminLoggedIn ? "✅ Authenticated" : "❌ Not Authenticated"}
+                </span>
+              </div>
+            </div>
             <div className="flex gap-2">
+              <Button variant="secondary" onClick={checkAdminAuth}>Check Auth</Button>
               <Button variant="primary" onClick={handleAdd}>Add Product</Button>
               <Button variant="outline" onClick={handleAdminLogout}>Logout</Button>
             </div>

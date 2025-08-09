@@ -60,7 +60,7 @@ const FilterSidebar = ({ isOpen, onClose, filters, onFilterChange }) => {
       
       {/* Sidebar */}
       <div className={`
-        fixed lg:sticky top-0 left-0 h-full lg:h-auto w-80 bg-card border-r border-border z-50 lg:z-auto
+        fixed lg:sticky top-0 lg:top-20 left-0 h-full lg:h-auto w-80 bg-card border-r border-border z-50 lg:z-auto
         transform transition-transform duration-300 ease-out lg:transform-none
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         overflow-y-auto

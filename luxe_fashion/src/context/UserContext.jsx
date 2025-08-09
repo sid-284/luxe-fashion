@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from '../utils/firebase';
-import { apiFetch } from '../utils/api';
+import { apiFetch, authUtils } from '../utils/api';
 
 const UserContext = createContext(null);
 
@@ -44,10 +44,13 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       console.error('Backend logout failed:', error);
     }
-    
+
+    // Clear localStorage authentication data
+    authUtils.clearAuthToken();
+
     // Logout from Firebase
     await signOut(auth);
-    
+
     setBackendAuthenticated(false);
     setBackendUser(null);
   }, []);

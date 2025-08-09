@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gruppo:wght@400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -15,41 +14,41 @@
     --color-popover-foreground: #1A1A1A; /* rich-black */
     --color-muted: #F8F8F8; /* subtle-gray */
     --color-muted-foreground: #666666; /* medium-gray */
-    
+
     /* Brand Colors */
     --color-primary: #2C2C2C; /* sophisticated-charcoal */
     --color-primary-foreground: #FFFFFF; /* white */
     --color-secondary: #8B8B8B; /* refined-gray */
     --color-secondary-foreground: #FFFFFF; /* white */
-    
-    /* Accent Colors */
-    --color-accent: #D4AF37; /* muted-gold */
-    --color-accent-foreground: #1A1A1A; /* rich-black */
-    
-    /* State Colors */
-    --color-success: #7A9B76; /* sage-green */
+
+    /* Accent Colors - Updated to #92b174 theme */
+    --color-accent: #92b174; /* sage-green */
+    --color-accent-foreground: #FFFFFF; /* white */
+
+    /* State Colors - Updated to complement #92b174 */
+    --color-success: #92b174; /* sage-green - same as accent */
     --color-success-foreground: #FFFFFF; /* white */
-    --color-warning: #B8860B; /* warm-amber */
+    --color-warning: #92b174; /* sage-green - changed from amber */
     --color-warning-foreground: #FFFFFF; /* white */
-    --color-error: #8B4B4B; /* muted-burgundy */
+    --color-error: #EF4444; /* red */
     --color-error-foreground: #FFFFFF; /* white */
-    --color-destructive: #8B4B4B; /* muted-burgundy */
+    --color-destructive: #EF4444; /* red */
     --color-destructive-foreground: #FFFFFF; /* white */
-    
+
     /* UI Elements */
     --color-border: #E5E5E5; /* light-gray */
     --color-input: #FFFFFF; /* white */
-    --color-ring: #D4AF37; /* muted-gold */
-    
+    --color-ring: #92b174; /* sage-green */
+
     /* Surface Colors */
     --color-surface: #F8F8F8; /* subtle-depth */
-    
+
     /* Typography */
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-    --font-serif: 'Merriweather', 'Georgia', serif;
-    --font-display: 'Playfair Display', 'Georgia', serif;
-    --font-italic: 'Crimson Text', 'Georgia', serif;
-    
+    --font-sans: 'Gruppo', system-ui, sans-serif;
+    --font-serif: 'Gruppo', Georgia, serif;
+    --font-display: 'Gruppo', system-ui, sans-serif;
+    --font-italic: 'Gruppo', system-ui, sans-serif;
+
     /* Shadows */
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
@@ -58,11 +57,11 @@
     --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.25);
     --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.06);
     --shadow-none: 0 0 #0000;
-    
+
     /* Elevation */
     --elevation-card: 0 4px 20px rgba(0, 0, 0, 0.08);
     --elevation-modal: 0 10px 40px rgba(0, 0, 0, 0.15);
-    
+
     /* Border Radius */
     --radius-sm: 0.125rem;
     --radius: 0.25rem;
@@ -72,7 +71,7 @@
     --radius-2xl: 1rem;
     --radius-3xl: 1.5rem;
     --radius-full: 9999px;
-    
+
     /* Spacing Scale */
     --spacing-xs: 0.25rem;
     --spacing-sm: 0.5rem;
@@ -85,16 +84,16 @@
     --spacing-5xl: 5rem;
     --spacing-6xl: 6rem;
   }
-  
+
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif;
     font-feature-settings: "ss01" 1, "liga" 1;
@@ -102,13 +101,15 @@
 }
 
 @layer components {
-.btn-primary  {
+  .btn-primary {
     @apply bg-primary text-primary-foreground transition-colors duration-300 ease-out;
   }
-.btn-secondary  {
+
+  .btn-secondary {
     @apply bg-secondary text-secondary-foreground transition-colors duration-300 ease-out;
   }
-.btn-accent  {
+
+  .btn-accent {
     @apply bg-accent text-accent-foreground transition-colors duration-300 ease-out;
   }
 
@@ -120,12 +121,12 @@
     box-shadow: var(--elevation-modal);
   }
 
-  .text-gradient-gold {
-    @apply bg-gradient-to-r from-accent to-amber-400 bg-clip-text text-transparent;
+  .text-gradient-sage {
+    @apply bg-gradient-to-r from-accent to-green-500 bg-clip-text text-transparent;
   }
 
   .text-gradient-brand {
-    @apply bg-gradient-to-r from-accent via-amber-400 to-accent bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-accent via-green-500 to-accent bg-clip-text text-transparent;
   }
 
   .smooth-transition {
@@ -137,11 +138,11 @@
   }
 
   .brand-glow {
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 20px rgba(146, 177, 116, 0.3);
   }
 
   .brand-glow-hover:hover {
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+    box-shadow: 0 0 30px rgba(146, 177, 116, 0.5);
   }
 
   .backdrop-blur-luxury {
@@ -151,15 +152,15 @@
   .ease-luxury {
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   .fade-in {
     @apply opacity-0 translate-y-10 transition-all duration-500 ease-out;
   }
-  
+
   .fade-in.visible {
     @apply opacity-100 translate-y-0;
   }
-  
+
   .font-italic {
     font-family: var(--font-italic);
     font-style: italic;
@@ -170,28 +171,28 @@
   .text-balance {
     text-wrap: balance;
   }
-  
+
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
+
   .backdrop-blur-luxury {
     backdrop-filter: blur(8px);
     background: rgba(255, 255, 255, 0.9);
   }
-  
+
   .grid-masonry {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     grid-auto-rows: masonry;
     gap: 1.5rem;
   }
-  
+
   @supports not (grid-template-rows: masonry) {
     .grid-masonry {
       display: flex;
@@ -218,7 +219,7 @@
   }
 }
 
-/* Custom Keyframes for 9tyTwo Brand */
+/* Custom Keyframes for Updated Brand */
 @keyframes float {
   0%, 100% {
     transform: translateY(0px);
@@ -230,10 +231,10 @@
 
 @keyframes glow {
   from {
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 20px rgba(146, 177, 116, 0.3);
   }
   to {
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    box-shadow: 0 0 30px rgba(146, 177, 116, 0.6);
   }
 }
 
