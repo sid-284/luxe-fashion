@@ -160,12 +160,18 @@ export const googleLogin = async (req,res) => {
         }
        
         let token = await genToken(user._id)
-        res.cookie("token",token,{
-        httpOnly:true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000
-    })
+
+        // Cookie settings for production compatibility (consistent with other auth methods)
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? undefined : undefined // Let browser handle domain
+        };
+
+        res.cookie("token", token, cookieOptions)
     console.log('Google login successful:', user._id);
     return res.status(200).json({...user.toObject(), token})
 

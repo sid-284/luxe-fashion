@@ -19,10 +19,27 @@ let app = express()
 app.use(cookieParser())
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow all origins - this effectively works as a wildcard
-    // while still supporting credentials
-    console.log('CORS request from origin:', origin || 'no-origin');
-    callback(null, true);
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      'https://luxefashion-blond.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:4173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:4173'
+    ];
+
+    console.log('CORS request from origin:', origin);
+
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -37,11 +54,19 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }))
 // Additional middleware to ensure proper CORS headers on all responses
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  // Always allow the requesting origin (wildcard behavior with credentials)
-  if (origin) {
+  const allowedOrigins = [
+    'https://luxefashion-blond.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:4173',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:4173'
+  ];
+
+  // Only set origin header if it's in allowed list
+  if (origin && allowedOrigins.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', '*');
   }
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -51,19 +76,30 @@ app.use((req, res, next) => {
 });
 
 // Handle preflight requests for all routes
-app.options('*', (req, res) => {
-  const origin = req.headers.origin;
-  // Always allow the requesting origin (wildcard behavior with credentials)
-  if (origin) {
-    res.header('Access-Control-Allow-Origin', origin);
-  } else {
-    res.header('Access-Control-Allow-Origin', '*');
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    const origin = req.headers.origin;
+    const allowedOrigins = [
+      'https://luxefashion-blond.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5173',
+      'http://localhost:4173',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:4173'
+    ];
+
+    // Only set origin header if it's in allowed list
+    if (origin && allowedOrigins.includes(origin)) {
+      res.header('Access-Control-Allow-Origin', origin);
+    }
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Cookie');
+    res.header('Access-Control-Expose-Headers', 'Set-Cookie');
+    return res.sendStatus(200);
   }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Cookie');
-  res.header('Access-Control-Expose-Headers', 'Set-Cookie');
-  res.sendStatus(200);
+  next();
 });
 
 // Apply rate limiting to all routes
